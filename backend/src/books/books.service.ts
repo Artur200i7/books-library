@@ -11,10 +11,26 @@ export interface Book {
 
 @Injectable()
 export class BooksService {
-  private books: Book[] = [
-    { id: 1, title: 'Kobzar', authorId: 1, genre: 'Poetry' },
-    { id: 2, title: '1984', authorId: 2, genre: 'Dystopia' },
-  ];
+  private books = [
+  { 
+    id: 1, 
+    title: "The Art of War", 
+    authorId: 1, 
+    genre: "Strategy/Business" 
+  },
+  { 
+    id: 2, 
+    title: "The Godfather", 
+    authorId: 2, 
+    genre: "Crime Drama" 
+  },
+  { 
+    id: 3, 
+    title: "Wise Guy", 
+    authorId: 3, 
+    genre: "Biography" 
+  }
+];
 
   findAll() {
     return this.books;

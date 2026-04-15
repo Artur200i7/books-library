@@ -1,44 +1,41 @@
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { createBook } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
-const schema = z.object({
-  title: z.string().min(3, "Назва занадто коротка"),
-  authorId: z.number().min(1, "ID автора обов'язкове"),
-  genre: z.string().min(2, "Вкажіть жанр"),
-});
-
 export default function AddBook() {
+  const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    resolver: zodResolver(schema)
-  });
 
-  const onSubmit = async (data: any) => {
-    try {
-      await createBook(data);
-      navigate('/');
-    } catch (e) {
-      alert("Помилка при створенні!");
-    }
+  const onSubmit = (data: any) => {
+    const payload = {
+      ...data,
+      authorId: Number(data.authorId)
+    };
+
+    createBook(payload)
+      .then(() => {
+        alert("Нову справу внесено в Ledger!");
+        navigate('/'); 
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Помилка! Перевір, чи ввів ти число в ID Автора.");
+      });
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>Додати нову книгу</h1>
-      <div>
-        <input {...register("title")} placeholder="Назва книги" />
-        {errors.title?.message && <p style={{color: 'red'}}>{String(errors.title.message)}</p>}
-      </div>
-      <div>
-        <input type="number" {...register("authorId", { valueAsNumber: true })} placeholder="ID автора" />
-      </div>
-      <div>
-        <input {...register("genre")} placeholder="Жанр" />
-      </div>
-      <button type="submit">Зберегти</button>
-    </form>
+    <div>
+      <h2 style={{ fontSize: '1.8rem', borderBottom: '1px solid #333', paddingBottom: '15px' }}>
+        Внести нову книгу в Облік
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: '30px' }}>
+        <input {...register('title')} placeholder="Назва книги (The Title)" required />
+        <input {...register('authorId')} placeholder="ID Автора (The Associate ID)" type="number" required />
+        <input {...register('genre')} placeholder="Жанр (The Territory)" required />
+        <button type="submit" className="primary-btn">
+          Внести в Ledger
+        </button>
+      </form>
+    </div>
   );
 }
