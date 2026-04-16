@@ -1,41 +1,27 @@
 import { useForm } from 'react-hook-form';
 import { createBook } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Box, Typography, Paper } from '@mui/material';
 
 export default function AddBook() {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   const onSubmit = (data: any) => {
-    const payload = {
-      ...data,
-      authorId: Number(data.authorId)
-    };
-
-    createBook(payload)
-      .then(() => {
-        alert("Нову справу внесено в Ledger!");
-        navigate('/'); 
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Помилка! Перевір, чи ввів ти число в ID Автора.");
-      });
+    createBook({ ...data, authorId: Number(data.authorId) })
+      .then(() => navigate('/'))
+      .catch(() => alert("Помилка! Перевір дані."));
   };
 
   return (
-    <div>
-      <h2 style={{ fontSize: '1.8rem', borderBottom: '1px solid #333', paddingBottom: '15px' }}>
-        Внести нову книгу в Облік
-      </h2>
-      <form onSubmit={handleSubmit(onSubmit)} style={{ marginTop: '30px' }}>
-        <input {...register('title')} placeholder="Назва книги (The Title)" required />
-        <input {...register('authorId')} placeholder="ID Автора (The Associate ID)" type="number" required />
-        <input {...register('genre')} placeholder="Жанр (The Territory)" required />
-        <button type="submit" className="primary-btn">
-          Внести в Ledger
-        </button>
-      </form>
-    </div>
+    <Paper sx={{ p: 4 }}>
+      <Typography variant="h4" gutterBottom color="primary">Внести Справу</Typography>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <TextField label="Назва книги" {...register('title')} required fullWidth variant="outlined" />
+        <TextField label="ID Автора" type="number" {...register('authorId')} required fullWidth />
+        <TextField label="Жанр" {...register('genre')} required fullWidth />
+        <Button type="submit" variant="contained" color="secondary" size="large">Внести в Ledger</Button>
+      </Box>
+    </Paper>
   );
 }

@@ -1,14 +1,13 @@
-import { IsString, IsInt, MinLength, IsNotEmpty } from 'class-validator';
+import { IsString, IsNumber, MinLength } from 'class-validator';
 
 export class CreateBookDto {
   @IsString()
-  @IsNotEmpty()
-  @MinLength(3, { message: 'Назва має бути не менше 3 символів' })
-  title!: string; // Додай знак оклику тут
+  @MinLength(2)
+  title: string;
 
-  @IsInt()
-  authorId!: number; // І тут
+  @IsNumber()
+  authorId: number;
 
   @IsString()
-  genre!: string; // І тут
+  genre: string;
 }
